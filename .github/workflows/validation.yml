@@ -38,7 +38,6 @@ jobs:
     - name: Run tests with pytest and coverage
       run: |
         pytest 01/tests --cov=01 --cov-report term-missing --cov-fail-under=80  # Adjust coverage threshold as needed
-      continue-on-error: true  # Ensure tests and coverage runs even if previous steps fail
 
     - name: Aggregate Results
       if: always()  # Run this step regardless of previous step outcomes
