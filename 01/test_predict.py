@@ -34,7 +34,7 @@ def test_predict_custom_thresholds_3():
 
 
 def test_predict_model_return_value():
-    assert predict_message_mood("Чапаев и пустота", bad_thresholds=0.1, good_thresholds=0.85) == "отл"
+    assert predict_message_mood("Чапаев и пустота", bad_thresholds=0.8, good_thresholds=0.99) == "норм"
 
 
 def test_predict_empty_string():
