@@ -1,4 +1,4 @@
-from ..predict_package.predict import predict_message_mood
+from predict import predict_message_mood
 
 
 def test_predict_positive_message():
