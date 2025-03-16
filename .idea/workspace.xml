@@ -2,17 +2,15 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="bcc55a86-5e4d-4def-b62c-7f18b33dceed" name="Changes" comment="">
-      <change beforePath="$PROJECT_DIR$/.coverage" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/.gitignore" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/VK_Education.iml" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/inspectionProfiles/profiles_settings.xml" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/misc.xml" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/modules.xml" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/vcs.xml" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/predict_package/__init__.py" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/predict_package/predict.py" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/tests/__init__.py" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/tests/test_predict.py" beforeDir="false" />
+      <change afterPath="$PROJECT_DIR$/.flake8" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/.idea/encodings.xml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/pylintrc" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/VK_Education.iml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/VK_Education.iml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/01/predict_package/__init__.py" beforeDir="false" afterPath="$PROJECT_DIR$/01/predict_package/__init__.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/01/predict_package/predict.py" beforeDir="false" afterPath="$PROJECT_DIR$/01/predict_package/predict.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/01/tests/__init__.py" beforeDir="false" afterPath="$PROJECT_DIR$/01/tests/__init__.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/01/tests/test_predict.py" beforeDir="false" afterPath="$PROJECT_DIR$/01/tests/test_predict.py" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -38,6 +36,14 @@
     <option name="hideEmptyMiddlePackages" value="true" />
     <option name="showLibraryContents" value="true" />
   </component>
+  <component name="PropertiesComponent"><![CDATA[{
+  "keyToString": {
+    "RunOnceActivity.OpenProjectViewOnStart": "true",
+    "RunOnceActivity.ShowReadmeOnStart": "true",
+    "run.code.analysis.last.selected.profile": "pProject Default",
+    "settings.editor.selected.configurable": "com.jetbrains.python.configuration.PyActiveSdkModuleConfigurable"
+  }
+}]]></component>
   <component name="RecentsManager">
     <key name="MoveFile.RECENT_KEYS">
       <recent name="C:\Users\Danil\PycharmProjects\VK_Education" />

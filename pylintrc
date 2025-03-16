@@ -1,0 +1,15 @@
+[MESSAGES CONTROL]
+disable=
+    missing-docstring,
+    line-too-long,
+    too-few-public-methods,
+    relative-beyond-top-level
+[FORMAT]
+max-line-length=120
+[BASIC]
+ignore=
+    .idea,
+    .pytest_cache
+    .venv,
+    __pycache__,
+    venv
