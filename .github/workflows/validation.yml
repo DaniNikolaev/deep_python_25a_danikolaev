@@ -29,15 +29,15 @@ jobs:
 
     - name: Run tests with coverage
       run: |
-        pytest --cov=01 --cov-report=xml tests/
+        pytest --cov=01 --cov-report=xml 01/test_predict.py
 
     - name: Run flake8
       run: |
-        flake8 01/
+        flake8 01/ --config=.flake8
 
     - name: Run pylint
       run: |
-        pylint 01/
+        pylint 01/ --rcfile=pylintrc
 
     - name: Upload coverage to Codecov
       uses: codecov/codecov-action@v3

@@ -2,22 +2,8 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="bcc55a86-5e4d-4def-b62c-7f18b33dceed" name="Changes" comment="">
-      <change beforePath="$PROJECT_DIR$/.idea/VK_Education.iml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/VK_Education.iml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/encodings.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/.github/workflows/validation.yml" beforeDir="false" afterPath="$PROJECT_DIR$/.github/workflows/validation.yml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/01/.idea/.gitignore" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/01/.idea/VK_Education.iml" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/01/.idea/inspectionProfiles/profiles_settings.xml" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/01/.idea/misc.xml" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/01/.idea/modules.xml" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/01/.idea/vcs.xml" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/01/.pytest_cache/.gitignore" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/01/.pytest_cache/CACHEDIR.TAG" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/01/.pytest_cache/README.md" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/01/predict_package/__init__.py" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/01/predict_package/predict.py" beforeDir="false" afterPath="$PROJECT_DIR$/01/predict.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/01/tests/__init__.py" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/01/tests/test_predict.py" beforeDir="false" afterPath="$PROJECT_DIR$/01/test_predict.py" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
