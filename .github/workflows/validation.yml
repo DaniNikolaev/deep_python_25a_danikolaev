@@ -37,7 +37,11 @@ jobs:
 
     - name: Run pylint
       run: |
+<<<<<<< HEAD
         pylint 01/ --rcfile=pylintrc
+=======
+        pylint 01/ --rcfile=.pylintrc
+>>>>>>> 7d252d9d8ef760ed097366910236dfcf7bfb1f1b
 
     - name: Upload coverage to Codecov
       uses: codecov/codecov-action@v3
