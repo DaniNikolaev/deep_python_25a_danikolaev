@@ -19,5 +19,5 @@ def search_in_file(filename, search_words, stop_words):
         else:
             for line in filename:
                 yield from check_line(line, search_words, stop_words)
-    except FileNotFoundError:
-        raise FileNotFoundError(f'Файл не найден: {filename}')
+    except FileNotFoundError as exc:
+        raise FileNotFoundError(f'Файл не найден: {filename}') from exc
