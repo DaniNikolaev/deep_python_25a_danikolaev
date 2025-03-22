@@ -21,7 +21,3 @@ def search_in_file(filename, search_words, stop_words):
                 yield from check_line(line, search_words, stop_words)
     except FileNotFoundError:
         raise FileNotFoundError(f'Файл не найден: {filename}')
-
-
-gen = search_in_file('test1', ['Я', 'привет'], ['Данил'])
-
