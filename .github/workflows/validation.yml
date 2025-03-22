@@ -30,6 +30,7 @@ jobs:
     - name: Run tests with coverage
       run: |
         pytest --cov=01 --cov-report=xml 01/test_predict.py
+        pytest --cov=01 --cov-report=xml 01/test_generator.py
 
     - name: Run flake8
       run: |
