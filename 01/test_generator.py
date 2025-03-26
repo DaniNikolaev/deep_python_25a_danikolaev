@@ -18,7 +18,6 @@ STOP_WORDS = ["азора", "собака"]
 
 @pytest.fixture
 def temp_test_file(tmp_path):
-    """Создает временный тестовый файл и возвращает его имя."""
     d = tmp_path / "test_data"
     d.mkdir()
     p = d / "test.txt"
@@ -28,7 +27,7 @@ def temp_test_file(tmp_path):
 
 
 @pytest.fixture
-def lines_for_test():  # Переименовали фикстуру
+def lines_for_test():
     return TEST_FILE_CONTENT
 
 
@@ -87,7 +86,7 @@ def test_search_in_file_only_stopwords(temp_test_file):
     assert not result
 
 
-def test_search_in_file_with_test_lines(lines_for_test):  # Используем новое имя фикстуры
+def test_search_in_file_with_test_lines(lines_for_test):
     expected_result = ["Роза упала", "Упала роза на лапу", "кошка Мурка спит"]
     result = list(search_in_file(lines_for_test, SEARCH_WORDS, STOP_WORDS))
     assert result == expected_result
