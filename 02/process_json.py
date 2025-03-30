@@ -22,9 +22,9 @@ def create_dict_from_str(json_str):
         return json_dict
 
     except json.JSONDecodeError as e:
-        raise ValueError(f"Ошибка декодирования JSON: {e}")
+        raise ValueError(f"Ошибка декодирования JSON: {e}") from e
     except ValueError as e:
-        raise ValueError(str(e))
+        raise ValueError(str(e)) from e
 
 
 def process_json(
@@ -50,15 +50,5 @@ def process_json(
                 if check_token_in_values(token, value):
                     if callback:
                         print(callback(key, token))
-                    else:  # Удалим f-строку
+                    else:
                         print(f"{key}: {token}")
-
-
-json_str = '{"key1": "Word1 word2", "key2": "word2 word3"}'
-required_keys = ["key1", "KEY2"]
-tokens = ["WORD1", "word2"]
-
-process_json(json_str, required_keys, tokens, lambda key, token: f"{key=}, {token=}")
-# выведет:
-# key="key1", token="WORD1"
-# key="key1", token="word2
