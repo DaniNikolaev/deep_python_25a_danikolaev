@@ -2,7 +2,8 @@
 disable=
     missing-docstring,
     line-too-long,
-    too-few-public-methods
+    too-few-public-methods,
+    broad-exception-raised
 [FORMAT]
 max-line-length=120
 [BASIC]
