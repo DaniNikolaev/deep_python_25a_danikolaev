@@ -25,13 +25,13 @@ jobs:
     - name: Install dependencies
       run: |
         python -m pip install --upgrade pip
-        pip install json pytest pytest-mock pytest-cov flake8 pylint
+        pip install pytest pytest-mock pytest-cov flake8 pylint
 
     - name: Run tests with coverage
       run: |
         pytest --cov=01 --cov-report=xml 01/test_predict.py
         pytest --cov=01 --cov-report=xml 01/test_generator.py
-        pytest --cov=02 --cov-report=xml 01/test_process_json.py
+        pytest --cov=02 --cov-report=xml 02/test_process_json.py
 
     - name: Run flake8
       run: |
