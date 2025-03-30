@@ -31,7 +31,7 @@ jobs:
       run: |
         pytest --cov=01 --cov-report=xml 01/test_predict.py
         pytest --cov=01 --cov-report=xml 01/test_generator.py
-        pytest --cov=02 --cov-report=xml 01/test_process_json.py
+        pytest --cov=02 --cov-report=xml 02/test_process_json.py
 
     - name: Run flake8
       run: |
