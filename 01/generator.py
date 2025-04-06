@@ -2,6 +2,7 @@ def check_line(line, search_words, stop_words):
     if not line:
         return
     line = line.strip()
+    print(line)
     if any(map(lambda x: x in stop_words, [v.lower() for v in line.split()])):
         return
     if any(map(lambda x: x in search_words, [v.lower() for v in line.split()])):

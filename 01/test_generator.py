@@ -19,6 +19,16 @@ from generator import check_line, search_in_file
         ("Строка с ф", ["ф"], ["стоп"], ["Строка с ф"]),
         ("Строка с оченьдлиннымфильтром", ["оченьдлиннымфильтром"], ["стоп"], ["Строка с оченьдлиннымфильтром"]),
         ("Строка со стоп", ["фильтр"], ["Стоп"], []),
+
+        ("Фильтр", ["Фильтр"], ["Фильтр"], []),
+        ("ФильтрСтоп", ["Фильтр"], ["Стоп"], []),
+        ("СтрокаФильтрКонец", ["Фильтр"], ["Конец"], []),
+        ("Фильтр Стоп", ["Фильтр"], ["Стоп"], []),
+        ("ФильтрФильтр", ["Фильтр"], ["Стоп"], []),
+        ("СтопСтоп", ["Фильтр"], ["Стоп"], []),
+        ("Фильтр и фильтр", ["фильтр"], ["стоп"], ["Фильтр и фильтр"]),
+        ("123 фильтр 456", ["фильтр"], ["стоп"], ["123 фильтр 456"]),
+        ("!@#фильтр%^&", ["фильтр"], ["стоп"], []),
     ],
 )
 def test_check_line(line, search_words, stop_words, expected):
@@ -33,6 +43,9 @@ def test_search_in_file_basic(tmp_path):
     p.write_text("Строка с фильтр\nСтрока со Стоп\nДругая строка", encoding='utf-8')
     result = list(search_in_file(str(p), ["фильтр"], ["стоп"]))
     assert result == ["Строка с фильтр"]
+    p.write_text("Фильтр \n Стоп", encoding='utf-8')
+    result = list(search_in_file(str(p), ["Фильтр"], ["Стоп"]))
+    assert result == ["Фильтр"]
 
 
 def test_search_in_file_not_found():
@@ -139,4 +152,80 @@ def test_search_in_file_line_with_many_stop_words(tmp_path):
     p = d / "test_file.txt"
     p.write_text("строка стоп1 стоп2 стоп3 фильтр", encoding='utf-8')
     result = list(search_in_file(str(p), ["фильтр"], ["стоп1", "стоп2", "стоп3"]))
+    assert not result
+
+
+def test_search_in_file_exact_match(tmp_path):
+    d = tmp_path / "sub"
+    d.mkdir()
+    p = d / "test_file.txt"
+    p.write_text("фильтр\n", encoding='utf-8')
+    result = list(search_in_file(str(p), ["фильтр"], ["стоп"]))
+    assert result == ["фильтр"]
+
+
+def test_search_in_file_exact_stop_match(tmp_path):
+    d = tmp_path / "sub"
+    d.mkdir()
+    p = d / "test_file.txt"
+    p.write_text("стоп\n", encoding='utf-8')
+    result = list(search_in_file(str(p), ["фильтр"], ["стоп"]))
+    assert not result
+
+
+def test_search_in_file_multiple_matches(tmp_path):
+    d = tmp_path / "sub"
+    d.mkdir()
+    p = d / "test_file.txt"
+    content = "фильтр 1\nфильтр 2\nстоп 3\nфильтр 4"
+    p.write_text(content, encoding='utf-8')
+    result = list(search_in_file(str(p), ["фильтр"], ["стоп"]))
+    assert result == ["фильтр 1", "фильтр 2", "фильтр 4"]
+
+
+def test_search_in_file_partial_word_matches(tmp_path):
+    d = tmp_path / "sub"
+    d.mkdir()
+    p = d / "test_file.txt"
+    p.write_text("частичныйфильтр\nфильтрчастичный\nстопслово", encoding='utf-8')
+    result = list(search_in_file(str(p), ["частичныйфильтр"], ["стоп"]))
+    assert result == ["частичныйфильтр"]
+
+
+def test_search_in_file_multibyte_chars(tmp_path):
+    d = tmp_path / "sub"
+    d.mkdir()
+    p = d / "test_file.txt"
+    p.write_text("фильтр 日本国\n日本語 стоп\nфильтр 汉字", encoding='utf-8')
+    result = list(search_in_file(str(p), ["фильтр"], ["стоп"]))
+    assert result == ["фильтр 日本国", "фильтр 汉字"]
+
+
+def test_search_in_file_mixed_encodings(tmp_path):
+    d = tmp_path / "sub"
+    d.mkdir()
+    p = d / "test_file.txt"
+    with open(str(p), 'wb') as f:
+        f.write("фильтр ".encode('utf-8') + "стоп".encode('cp1251') + b"\n")
+    with pytest.raises(UnicodeDecodeError):
+        list(search_in_file(str(p), ["фильтр"], ["стоп"]))
+
+
+def test_search_in_file_large_file(tmp_path):
+    d = tmp_path / "sub"
+    d.mkdir()
+    p = d / "test_file.txt"
+    with open(str(p), 'w', encoding='utf-8') as f:
+        for i in range(10000):
+            f.write(f"строка {i} фильтр\n" if i % 100 == 0 else f"строка {i}\n")
+    result = list(search_in_file(str(p), ["фильтр"], ["стоп"]))
+    assert len(result) == 100
+
+
+def test_search_in_file_same_search_and_stop(tmp_path):
+    d = tmp_path / "sub"
+    d.mkdir()
+    p = d / "test_file.txt"
+    p.write_text("фильтр\nстоп\nфильтр и стоп", encoding='utf-8')
+    result = list(search_in_file(str(p), ["фильтр"], ["фильтр"]))
     assert not result
