@@ -3,7 +3,9 @@ disable=
     missing-docstring,
     line-too-long,
     too-few-public-methods,
-    broad-exception-raised
+    too-many-public-methods,
+    broad-exception-raised,
+    pointless-statement
 [FORMAT]
 max-line-length=120
 [BASIC]
