@@ -127,7 +127,7 @@ class TestCustomList:
         other_copy = other.copy()
 
         with patch.object(CustomList, '_CustomList__calculate') as mock_calculate:
-            cl + other
+            _ = cl + other
             if len(cl_copy) < len(other_copy):
                 assert mock_calculate.call_count > 0
             else:
@@ -143,7 +143,7 @@ class TestCustomList:
         other_copy = other.copy()
 
         with patch.object(CustomList, '_CustomList__calculate') as mock_calculate:
-            cl - other
+            _ = cl - other
             if len(cl_copy) < len(other_copy):
                 assert mock_calculate.call_count > 0
             else:
@@ -159,7 +159,7 @@ class TestCustomList:
         other_copy = other.copy()
 
         with patch.object(CustomList, '_CustomList__calculate') as mock_calculate:
-            other - cl
+            _ = other - cl
             if len(cl_copy) > len(other_copy):
                 assert mock_calculate.call_count > 0
             else:
