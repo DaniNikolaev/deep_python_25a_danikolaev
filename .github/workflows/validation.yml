@@ -34,17 +34,21 @@ jobs:
         pytest --cov=02 --cov-report=xml 02/test_process_json.py
         pytest --cov=02 --cov-report=xml 02/test_decorator.py
         pytest --cov=03 --cov-report=xml 03/test_custom_list.py
+        pytest --cov=04 --cov-report=xml 04/test_descriptor.py
+        pytest --cov=04 --cov-report=xml 04/test_metaclass.py
 
     - name: Run flake8
       run: |
         flake8 01/ --config=.flake8
         flake8 02/ --config=.flake8
         flake8 03/ --config=.flake8
+        flake8 04/ --config=.flake8
     - name: Run pylint
       run: |
         pylint 01/ --rcfile=pylintrc
         pylint 02/ --rcfile=pylintrc
         pylint 03/ --rcfile=pylintrc
+        pylint 04/ --rcfile=pylintrc
 
     - name: Upload coverage to Codecov
       uses: codecov/codecov-action@v3
