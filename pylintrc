@@ -5,7 +5,8 @@ disable=
     too-few-public-methods,
     too-many-public-methods,
     broad-exception-raised,
-    too-many-branches
+    too-many-branches,
+    unidiomatic-typecheck
 [FORMAT]
 max-line-length=120
 [BASIC]
