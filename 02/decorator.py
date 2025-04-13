@@ -19,17 +19,25 @@ def retry_deco(retries=3, expected_errors=None):
                           f"Аргументы: args={args}, kwargs={kwargs}. Результат: {result}")
                     return result
                 except Exception as e:  # pylint: disable=broad-except
+                    if any(isinstance(e, err_type) for err_type in expected_errors):
+                        print(f"Функция {func.__name__} (попытка {attempt}/{retries}) выбросила ожидаемое исключение: "
+                              f"{type(e).__name__}: {e}. Аргументы: args={args}, kwargs={kwargs}")
+                        print(f"Исключение {type(e).__name__} входит в список ожидаемых. Выход из retry.")
+                        raise
                     last_exception = e
                     print(f"Функция {func.__name__} (попытка {attempt}/{retries}) выбросила исключение: "
                           f"{type(e).__name__}: {e}. Аргументы: args={args}, kwargs={kwargs}")
-                    if type(e) in expected_errors:
-                        print(f"Исключение {type(e).__name__} входит в список ожидаемых. Выход из retry.")
-                        raise
-                    print("Повторная попытка через 1 секунду...")
-                    time.sleep(1)
+                    if attempt < retries:
+                        print("Повторная попытка через 1 секунду...")
+                        time.sleep(1)
+                    else:
+                        print(f"Функция {func.__name__} не выполнена после {retries} попыток. "
+                              f"Аргументы: args={args}, kwargs={kwargs}")
+                        raise last_exception from last_exception
+
             print(f"Функция {func.__name__} не выполнена после {retries} попыток. "
                   f"Аргументы: args={args}, kwargs={kwargs}")
-            raise last_exception
+            raise last_exception from last_exception
 
         return wrapper
     return decorator
