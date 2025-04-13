@@ -34,16 +34,10 @@ class CustomList(list):
         return self.__process_operation(other, op='-', r_op=True)
 
     def __eq__(self, other):
-        if len(self) != len(other):
-            return False
-        flag = all((v == o for v, o in zip(self, other)))
-        return sum(self) == sum(other) and flag
+        return sum(self) == sum(other)
 
     def __ne__(self, other):
-        if len(self) != len(other):
-            return True
-        flag = any((v != o for v, o in zip(self, other)))
-        return sum(self) != sum(other) or flag
+        return sum(self) != sum(other)
 
     def __lt__(self, other):
         return sum(self) < sum(other)

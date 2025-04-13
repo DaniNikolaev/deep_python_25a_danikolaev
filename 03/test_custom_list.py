@@ -6,10 +6,13 @@ class TestCustomList:
     @staticmethod
     def check_original_unchanged(original1, original2, operation):
         original1_copy = original1.copy()
-        original2_copy = original2.copy()\
-            if hasattr(original2, 'copy') \
-            else list(original2) if isinstance(original2, (list, CustomList)) else original2
-
+        if hasattr(original2, 'copy'):
+            original2_copy = original2.copy()
+        else:
+            if isinstance(original2, (list, CustomList)):
+                original2_copy = list(original2)
+            else:
+                original2_copy = original2
         result = operation()
 
         assert list(original1) == list(original1_copy)
@@ -29,6 +32,14 @@ class TestCustomList:
             ([1, 2], [4, 5, 6], [5, 7, 6]),
             ([1, 2, 3], [], [1, 2, 3]),
             ([], [1, 2, 3], [1, 2, 3]),
+            (CustomList([1, 2, 3]), CustomList([4, 5, 6]), CustomList([5, 7, 9])),
+            (CustomList([1, 2]), CustomList([4, 5, 6]), CustomList([5, 7, 6])),
+            (CustomList([1, 2, 3, 4]), CustomList([4, 5, 6]), CustomList([5, 7, 9, 4])),
+            (CustomList([1, 2, 3]), CustomList([]), CustomList([1, 2, 3])),
+            (CustomList([1, 2, 3]), CustomList([4, 5, 6, 8]), CustomList([5, 7, 9, 8])),
+            (CustomList([]), CustomList([4, 5, 6]), CustomList([4, 5, 6])),
+            (CustomList([2]), CustomList([4, 5, 6]), CustomList([6, 5, 6])),
+            (CustomList([2, 5, 9]), CustomList([4]), CustomList([6, 5, 9])),
         ],
     )
     def test_add(self, list1, list2, expected):
@@ -59,6 +70,14 @@ class TestCustomList:
             ([1, 2], [4, 5, 6], [5, 7, 6]),
             ([1, 2, 3], [], [1, 2, 3]),
             ([], [1, 2, 3], [1, 2, 3]),
+            (CustomList([1, 2, 3]), CustomList([4, 5, 6]), CustomList([5, 7, 9])),
+            (CustomList([1, 2]), CustomList([4, 5, 6]), CustomList([5, 7, 6])),
+            (CustomList([1, 2, 3, 4]), CustomList([4, 5, 6]), CustomList([5, 7, 9, 4])),
+            (CustomList([1, 2, 3]), CustomList([]), CustomList([1, 2, 3])),
+            (CustomList([1, 2, 3]), CustomList([4, 5, 6, 8]), CustomList([5, 7, 9, 8])),
+            (CustomList([]), CustomList([4, 5, 6]), CustomList([4, 5, 6])),
+            (CustomList([2]), CustomList([4, 5, 6]), CustomList([6, 5, 6])),
+            (CustomList([2, 5, 9]), CustomList([4]), CustomList([6, 5, 9])),
         ],
     )
     def test_radd(self, list1, list2, expected):
@@ -84,6 +103,14 @@ class TestCustomList:
             ([1, 2], [4, 5, 6], [-3, -3, -6]),
             ([1, 2, 3], [], [1, 2, 3]),
             ([], [1, 2, 3], [-1, -2, -3]),
+            (CustomList([1, 2, 3]), CustomList([4, 5, 6]), CustomList([-3, -3, -3])),
+            (CustomList([1, 2]), CustomList([4, 5, 6]), CustomList([-3, -3, -6])),
+            (CustomList([1, 2, 3, 4]), CustomList([4, 5, 6]), CustomList([-3, -3, -3, 4])),
+            (CustomList([1, 2, 3]), CustomList([]), CustomList([1, 2, 3])),
+            (CustomList([1, 2, 3]), CustomList([4, 5, 6, 8]), CustomList([-3, -3, -3, -8])),
+            (CustomList([]), CustomList([4, 5, 6]), CustomList([-4, -5, -6])),
+            (CustomList([2]), CustomList([4, 5, 6]), CustomList([-2, -5, -6])),
+            (CustomList([2, 5, 9]), CustomList([4]), CustomList([-2, 5, 9])),
         ],
     )
     def test_sub(self, list1, list2, expected):
@@ -109,6 +136,14 @@ class TestCustomList:
             ([1, 2], [4, 5, 6], [3, 3, 6]),
             ([1, 2, 3], [], [-1, -2, -3]),
             ([], [1, 2, 3], [1, 2, 3]),
+            (CustomList([1, 2, 3]), CustomList([4, 5, 6]), CustomList([3, 3, 3])),
+            (CustomList([1, 2]), CustomList([4, 5, 6]), CustomList([3, 3, 6])),
+            (CustomList([1, 2, 3, 4]), CustomList([4, 5, 6]), CustomList([3, 3, 3, -4])),
+            (CustomList([1, 2, 3]), CustomList([]), CustomList([-1, -2, -3])),
+            (CustomList([1, 2, 3]), CustomList([4, 5, 6, 8]), CustomList([3, 3, 3, 8])),
+            (CustomList([]), CustomList([4, 5, 6]), CustomList([4, 5, 6])),
+            (CustomList([2]), CustomList([4, 5, 6]), CustomList([2, 5, 6])),
+            (CustomList([2, 5, 9]), CustomList([4]), CustomList([2, -5, -9])),
         ],
     )
     def test_rsub(self, list1, list2, expected):
@@ -128,13 +163,16 @@ class TestCustomList:
         "list1, list2, expected",
         [
             ([1, 2, 3], [1, 2, 3], True),
-            ([1, 2, 3], [3, 2, 1], False),
+            ([1, 2, 3], [3, 2, 1], True),
             ([1, 2, 3], [1, 2, 4], False),
-            ([1, 2, 3], [6], False),
+            ([1, 2, 3], [6], True),
             ([1, 2, 3], [1, 2], False),
             ([], [], True),
             ([1, 2, 3], CustomList([1, 2, 3]), True),
-            ([1, 2, 3], [1, 2, 3], True),
+            ([1, 2, 3], [1, 2, 3, 8], False),
+            ([1, 2], [3], True),
+            ([1, 2, 3], [], False),
+            ([5, -5], [], True),
         ],
     )
     def test_eq(self, list1, list2, expected):
@@ -152,13 +190,17 @@ class TestCustomList:
         "list1, list2, expected",
         [
             ([1, 2, 3], [1, 2, 3], False),
-            ([1, 2, 3], [3, 2, 1], True),
+            ([1, 2, 3], [3, 2, 1], False),
             ([1, 2, 3], [1, 2, 4], True),
-            ([1, 2, 3], [6], True),
+            ([1, 2, 3], [6], False),
             ([1, 2, 3], [1, 2], True),
             ([], [], False),
             ([1, 2, 3], CustomList([1, 2, 4]), True),
             ([1, 2, 3], [1, 2, 4], True),
+            ([1, 2, 3], [1, 2, 3, 8], True),
+            ([1, 2], [3], False),
+            ([1, 2, 3], [], True),
+            ([5, -5], [], False),
         ],
     )
     def test_ne(self, list1, list2, expected):
@@ -180,6 +222,10 @@ class TestCustomList:
             ([1, 2, 3], [1, 2, 3], False),
             ([1, 2, 3], [6], False),
             ([], [1], True),
+            (CustomList([1, 2, 3]), CustomList([1, 2, 3, 8]), True),
+            (CustomList([1, 2]), CustomList([3]), False),
+            (CustomList([1, 2, 3]), CustomList([]), False),
+            (CustomList([5, -5]), CustomList([]), False),
         ],
     )
     def test_lt(self, list1, list2, expected):
@@ -196,6 +242,10 @@ class TestCustomList:
             ([1, 2, 3], [6], True),
             ([], [1], True),
             ([], [], True),
+            (CustomList([1, 2, 3]), CustomList([1, 2, 3, 8]), True),
+            (CustomList([1, 2]), CustomList([3]), True),
+            (CustomList([1, 2, 3]), CustomList([]), False),
+            (CustomList([5, -5]), CustomList([]), True),
         ],
     )
     def test_le(self, list1, list2, expected):
@@ -211,6 +261,10 @@ class TestCustomList:
             ([1, 2, 3], [1, 2, 4], False),
             ([6], [1, 2, 3], False),
             ([1], [], True),
+            (CustomList([1, 2, 3]), CustomList([1, 2, 3, 8]), False),
+            (CustomList([1, 2]), CustomList([3]), False),
+            (CustomList([1, 2, 3]), CustomList([]), True),
+            (CustomList([5, -5]), CustomList([]), False),
         ],
     )
     def test_gt(self, list1, list2, expected):
@@ -227,6 +281,10 @@ class TestCustomList:
             ([6], [1, 2, 3], True),
             ([1], [], True),
             ([], [], True),
+            (CustomList([1, 2, 3]), CustomList([1, 2, 3, 8]), False),
+            (CustomList([1, 2]), CustomList([3]), True),
+            (CustomList([1, 2, 3]), CustomList([]), True),
+            (CustomList([5, -5]), CustomList([]), True),
         ],
     )
     def test_ge(self, list1, list2, expected):
