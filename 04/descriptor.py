@@ -2,29 +2,34 @@ from abc import ABC, abstractmethod
 
 
 class Base(ABC):
+    def __init__(self):
+        self.name = '_'
+
     @abstractmethod
     def check_value(self, value):
         pass
 
-
-class Age(Base):
-    def __init__(self, min_age=16, max_age=40):
-        self.name = ''
-        self.min_age = min_age
-        self.max_age = max_age
-
     def __set_name__(self, instance, name):
-        self.name = '_' + name
+        self.name += name
 
     def __get__(self, instance, owner):
+        if instance is None:
+            return None
         return getattr(instance, self.name)
 
     def __set__(self, instance, value):
         if self.check_value(value):
             setattr(instance, self.name, value)
 
+
+class Age(Base):
+    def __init__(self, min_age=16, max_age=40):
+        super().__init__()
+        self.min_age = min_age
+        self.max_age = max_age
+
     def check_value(self, value):
-        if type(value) is int:
+        if isinstance(value, int):
             if self.min_age <= value <= self.max_age:
                 return True
             raise ValueError(f'Возраст должен быть в интервале: {self.min_age} - {self.max_age}')
@@ -33,21 +38,11 @@ class Age(Base):
 
 class Height(Base):
     def __init__(self, min_height=165.0):
-        self.name = ''
+        super().__init__()
         self.min_height = min_height
 
-    def __set_name__(self, instance, name):
-        self.name = '_' + name
-
-    def __get__(self, instance, owner):
-        return getattr(instance, self.name)
-
-    def __set__(self, instance, value):
-        if self.check_value(value):
-            setattr(instance, self.name, value)
-
     def check_value(self, value):
-        if type(value) in (int, float):
+        if isinstance(value, (int, float)):
             if value >= self.min_height:
                 return True
             raise ValueError(f'Рост должен быть больше или равен {self.min_height}!')
@@ -56,22 +51,12 @@ class Height(Base):
 
 class Name(Base):
     def __init__(self, min_length=3, max_length=50):
-        self.name = ''
+        super().__init__()
         self.min_length = min_length
         self.max_length = max_length
 
-    def __set_name__(self, instance, name):
-        self.name = '_' + name
-
-    def __get__(self, instance, owner):
-        return getattr(instance, self.name)
-
-    def __set__(self, instance, value):
-        if self.check_value(value):
-            setattr(instance, self.name, value)
-
     def check_value(self, value):
-        if type(value) is str:
+        if isinstance(value, str):
             if self.min_length <= len(value) <= self.max_length:
                 return True
             raise ValueError(f'Длина имения должна быть в диапазоне от {self.min_length} до {self.max_length}')
@@ -81,21 +66,8 @@ class Name(Base):
 class Position(Base):
     POSITIONS = ('GK', 'LB', 'CB', 'RB', 'LM', 'CM', 'CDM', 'CAM', 'RM', 'LW', 'CF', 'RW', 'ST')
 
-    def __init__(self):
-        self.name = ''
-
-    def __set_name__(self, instance, name):
-        self.name = '_' + name
-
-    def __get__(self, instance, owner):
-        return getattr(instance, self.name)
-
-    def __set__(self, instance, value):
-        if self.check_value(value):
-            setattr(instance, self.name, value)
-
     def check_value(self, value):
-        if type(value) is str:
+        if isinstance(value, str):
             if value in self.POSITIONS:
                 return True
             raise ValueError('Такой позиции не существует!')

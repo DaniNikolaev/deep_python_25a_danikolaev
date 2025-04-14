@@ -9,14 +9,17 @@ class CustomMeta(type):
 
         cls = super().__new__(mcs, name, bases, new_namespace)
 
-        def __setattr__(self, __name, value):
-            if not (__name.startswith('__') and __name.endswith('__')):
-                if __name.startswith('custom_'):
-                    object.__setattr__(self, __name, value)
+        def __setattr__(self, name, value):
+            """при использовании name данный атрибут подчеркивается волнистой линией и пишет:
+            Shadows name 'name' from outer scope
+            На линтеры не влияет, поэтому оставил просто name"""
+            if not (name.startswith('__') and name.endswith('__')):
+                if name.startswith('custom_'):
+                    object.__setattr__(self, name, value)
                 else:
-                    object.__setattr__(self, f'custom_{__name}', value)
+                    object.__setattr__(self, f'custom_{name}', value)
             else:
-                object.__setattr__(self, __name, value)
+                object.__setattr__(self, name, value)
 
         cls.__setattr__ = __setattr__
         return cls
@@ -24,13 +27,13 @@ class CustomMeta(type):
     def __init__(cls, name, bases, namespace):
         super().__init__(name, bases, namespace)
 
-        def __getattribute__(self, __name):
-            if not (__name.startswith('__') and __name.endswith('__')):
-                if not __name.startswith('custom_'):
+        def __getattribute__(self, name):
+            if not (name.startswith('__') and name.endswith('__')):
+                if not name.startswith('custom_'):
                     raise AttributeError(
-                        f"'{self.__class__.__name__}' object has no attribute '{__name}'"
+                        f"'{self.__class__.__name__}' object has no attribute '{name}'"
                     )
-            return object.__getattribute__(self, __name)
+            return object.__getattribute__(self, name)
 
         cls.__getattribute__ = __getattribute__
 

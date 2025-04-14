@@ -42,6 +42,47 @@ class TestAge:
         with pytest.raises(ValueError):
             obj.age = "invalid"
 
+    def test_instance_independence(self):
+        class TestClass:
+            age = Age(min_age=16, max_age=40)
+
+        obj1 = TestClass()
+        obj2 = TestClass()
+
+        obj1.age = 20
+        obj2.age = 25
+
+        assert obj1.age == 20
+        assert obj2.age == 25
+
+        obj1.age = 30
+        assert obj1.age == 30
+        assert obj2.age == 25
+
+    def test_invalid_value_not_set(self):
+        class TestClass:
+            age = Age(min_age=16, max_age=40)
+
+        obj = TestClass()
+        obj.age = 25
+        assert obj.age == 25
+
+        with pytest.raises(ValueError):
+            obj.age = "invalid"
+
+        assert obj.age == 25
+
+    def test_valid_value_change(self):
+        class TestClass:
+            age = Age(min_age=16, max_age=40)
+
+        obj = TestClass()
+        obj.age = 20
+        assert obj.age == 20
+
+        obj.age = 25
+        assert obj.age == 25
+
 
 class TestHeight:
     def test_check_value_valid_int(self):
@@ -76,6 +117,47 @@ class TestHeight:
 
         with pytest.raises(ValueError):
             obj.height = "invalid"
+
+    def test_instance_independence(self):
+        class TestClass:
+            height = Height(min_height=165.0)
+
+        obj1 = TestClass()
+        obj2 = TestClass()
+
+        obj1.height = 170.0
+        obj2.height = 180.0
+
+        assert obj1.height == 170.0
+        assert obj2.height == 180.0
+
+        obj1.height = 175.0
+        assert obj1.height == 175.0
+        assert obj2.height == 180.0
+
+    def test_invalid_value_not_set(self):
+        class TestClass:
+            height = Height(min_height=165.0)
+
+        obj = TestClass()
+        obj.height = 170.0
+        assert obj.height == 170.0
+
+        with pytest.raises(ValueError):
+            obj.height = "invalid"
+
+        assert obj.height == 170.0
+
+    def test_valid_value_change(self):
+        class TestClass:
+            height = Height(min_height=165.0)
+
+        obj = TestClass()
+        obj.height = 170.0
+        assert obj.height == 170.0
+
+        obj.height = 175.0
+        assert obj.height == 175.0
 
 
 class TestName:
@@ -119,6 +201,47 @@ class TestName:
         with pytest.raises(ValueError):
             obj.name = 123
 
+    def test_instance_independence(self):
+        class TestClass:
+            name = Name(min_length=3, max_length=50)
+
+        obj1 = TestClass()
+        obj2 = TestClass()
+
+        obj1.name = "Player One"
+        obj2.name = "Player Two"
+
+        assert obj1.name == "Player One"
+        assert obj2.name == "Player Two"
+
+        obj1.name = "Updated One"
+        assert obj1.name == "Updated One"
+        assert obj2.name == "Player Two"
+
+    def test_invalid_value_not_set(self):
+        class TestClass:
+            name = Name(min_length=3, max_length=50)
+
+        obj = TestClass()
+        obj.name = "Valid Name"
+        assert obj.name == "Valid Name"
+
+        with pytest.raises(ValueError):
+            obj.name = 123
+
+        assert obj.name == "Valid Name"
+
+    def test_valid_value_change(self):
+        class TestClass:
+            name = Name(min_length=3, max_length=50)
+
+        obj = TestClass()
+        obj.name = "First Name"
+        assert obj.name == "First Name"
+
+        obj.name = "Second Name"
+        assert obj.name == "Second Name"
+
 
 class TestPosition:
     def test_check_value_valid(self):
@@ -146,6 +269,47 @@ class TestPosition:
 
         with pytest.raises(ValueError):
             obj.position = "INVALID"
+
+    def test_instance_independence(self):
+        class TestClass:
+            position = Position()
+
+        obj1 = TestClass()
+        obj2 = TestClass()
+
+        obj1.position = "CM"
+        obj2.position = "GK"
+
+        assert obj1.position == "CM"
+        assert obj2.position == "GK"
+
+        obj1.position = "CB"
+        assert obj1.position == "CB"
+        assert obj2.position == "GK"
+
+    def test_invalid_value_not_set(self):
+        class TestClass:
+            position = Position()
+
+        obj = TestClass()
+        obj.position = "CM"
+        assert obj.position == "CM"
+
+        with pytest.raises(ValueError):
+            obj.position = "INVALID"
+
+        assert obj.position == "CM"
+
+    def test_valid_value_change(self):
+        class TestClass:
+            position = Position()
+
+        obj = TestClass()
+        obj.position = "CM"
+        assert obj.position == "CM"
+
+        obj.position = "GK"
+        assert obj.position == "GK"
 
 
 class TestFootballPlayer:
@@ -225,3 +389,55 @@ class TestFootballPlayer:
 
         with pytest.raises(ValueError):
             player.name = "Tiny"
+
+    def test_instance_independence(self):
+        player1 = FootballPlayer(name="Player One", age=20, height=170.0, position="CM")
+        player2 = FootballPlayer(name="Player Two", age=25, height=180.0, position="GK")
+
+        assert player1.name == "Player One"
+        assert player2.name == "Player Two"
+
+        player1.name = "Updated One"
+        assert player1.name == "Updated One"
+        assert player2.name == "Player Two"
+
+    def test_invalid_value_not_set(self):
+        player = FootballPlayer(name="Valid Name", age=25, height=175.0, position="CM")
+
+        original_name = player.name
+        with pytest.raises(ValueError):
+            player.name = 123
+
+        assert player.name == original_name
+
+    def test_valid_value_change(self):
+        player = FootballPlayer(name="Original Name", age=25, height=175.0, position="CM")
+
+        player.name = "New Name"
+        assert player.name == "New Name"
+
+        player.age = 26
+        assert player.age == 26
+
+        player.height = 176.0
+        assert player.height == 176.0
+
+        player.position = "GK"
+        assert player.position == "GK"
+
+    def test_field_specific_error_messages(self):
+        with pytest.raises(ValueError) as exc_info:
+            FootballPlayer(name=123, age=25, height=175.0, position="CM")
+        assert "Имя должно быть строкой!" in str(exc_info.value)
+
+        with pytest.raises(ValueError) as exc_info:
+            FootballPlayer(name="Valid", age="25", height=175.0, position="CM")
+        assert "Возраст должен быть целым числом!" in str(exc_info.value)
+
+        with pytest.raises(ValueError) as exc_info:
+            FootballPlayer(name="Valid", age=25, height="175.0", position="CM")
+        assert "Рост должен быть числом!" in str(exc_info.value)
+
+        with pytest.raises(ValueError) as exc_info:
+            FootballPlayer(name="Valid", age=25, height=175.0, position=123)
+        assert "Позиция должна быть строкой!" in str(exc_info.value)
