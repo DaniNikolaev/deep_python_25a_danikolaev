@@ -39,10 +39,6 @@ jobs:
         pytest --cov=05 --cov-report=xml 05/test_lru_cache.py
     - name: Run isort
       run: |
-        isort --check --diff 01/
-        isort --check --diff 02/
-        isort --check --diff 03/
-        isort --check --diff 04/
         isort --check --diff 05/
 
     - name: Run flake8

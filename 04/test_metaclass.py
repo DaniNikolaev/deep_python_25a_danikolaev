@@ -1,6 +1,6 @@
 # pylint: disable=no-member,attribute-defined-outside-init
 import pytest
-from metaclass import CustomMeta, CustomClass
+from metaclass import CustomClass, CustomMeta
 
 
 class TestCustomMetaGeneral:

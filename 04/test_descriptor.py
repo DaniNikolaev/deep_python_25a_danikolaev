@@ -1,6 +1,7 @@
 from unittest.mock import patch
+
 import pytest
-from descriptor import Age, Height, Name, Position, FootballPlayer
+from descriptor import Age, FootballPlayer, Height, Name, Position
 
 
 class TestAge:
