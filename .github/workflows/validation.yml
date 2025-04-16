@@ -25,7 +25,7 @@ jobs:
     - name: Install dependencies
       run: |
         python -m pip install --upgrade pip
-        pip install pytest pytest-mock pytest-cov flake8 pylint
+        pip install pytest pytest-mock pytest-cov flake8 pylint isort
 
     - name: Run tests with coverage
       run: |
@@ -36,6 +36,14 @@ jobs:
         pytest --cov=03 --cov-report=xml 03/test_custom_list.py
         pytest --cov=04 --cov-report=xml 04/test_descriptor.py
         pytest --cov=04 --cov-report=xml 04/test_metaclass.py
+        pytest --cov=05 --cov-report=xml 05/test_lru_cache.py
+    - name: Run isort
+      run: |
+        isort --check --diff 01/
+        isort --check --diff 02/
+        isort --check --diff 03/
+        isort --check --diff 04/
+        isort --check --diff 05/
 
     - name: Run flake8
       run: |
@@ -43,12 +51,14 @@ jobs:
         flake8 02/ --config=.flake8
         flake8 03/ --config=.flake8
         flake8 04/ --config=.flake8
+        flake8 05/ --config=.flake8
     - name: Run pylint
       run: |
         pylint 01/ --rcfile=pylintrc
         pylint 02/ --rcfile=pylintrc
         pylint 03/ --rcfile=pylintrc
         pylint 04/ --rcfile=pylintrc
+        pylint 05/ --rcfile=pylintrc
 
     - name: Upload coverage to Codecov
       uses: codecov/codecov-action@v3
