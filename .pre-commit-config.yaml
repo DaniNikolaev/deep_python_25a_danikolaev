@@ -10,5 +10,5 @@ repos:
     rev: v3.0.3
     hooks:
       - id: pylint
-        args: [--rcfile=.pylintrc]
+        args: [--rcfile=pylintrc]
         additional_dependencies: [pylint==3.0.3]
