@@ -65,12 +65,17 @@ class TestAge:
 
         obj = TestClass()
         obj.age = 25
-        assert obj.age == 25
+        initial_value = obj.age
 
         with pytest.raises(ValueError):
             obj.age = "invalid"
 
-        assert obj.age == 25
+        assert obj.age == initial_value
+
+        with pytest.raises(ValueError):
+            obj.age = 15
+
+        assert obj.age == initial_value
 
     def test_valid_value_change(self):
         class TestClass:
@@ -141,12 +146,17 @@ class TestHeight:
 
         obj = TestClass()
         obj.height = 170.0
-        assert obj.height == 170.0
+        initial_value = obj.height
 
         with pytest.raises(ValueError):
             obj.height = "invalid"
 
-        assert obj.height == 170.0
+        assert obj.height == initial_value
+
+        with pytest.raises(ValueError):
+            obj.height = 160.0
+
+        assert obj.height == initial_value
 
     def test_valid_value_change(self):
         class TestClass:
@@ -224,12 +234,17 @@ class TestName:
 
         obj = TestClass()
         obj.name = "Valid Name"
-        assert obj.name == "Valid Name"
+        initial_value = obj.name
 
         with pytest.raises(ValueError):
             obj.name = 123
 
-        assert obj.name == "Valid Name"
+        assert obj.name == initial_value
+
+        with pytest.raises(ValueError):
+            obj.name = "A" * 51
+
+        assert obj.name == initial_value
 
     def test_valid_value_change(self):
         class TestClass:
@@ -293,12 +308,17 @@ class TestPosition:
 
         obj = TestClass()
         obj.position = "CM"
-        assert obj.position == "CM"
+        initial_value = obj.position
 
         with pytest.raises(ValueError):
             obj.position = "INVALID"
 
-        assert obj.position == "CM"
+        assert obj.position == initial_value
+
+        with pytest.raises(ValueError):
+            obj.position = 123
+
+        assert obj.position == initial_value
 
     def test_valid_value_change(self):
         class TestClass:
@@ -403,12 +423,38 @@ class TestFootballPlayer:
 
     def test_invalid_value_not_set(self):
         player = FootballPlayer(name="Valid Name", age=25, height=175.0, position="CM")
+        initial_values = {
+            'name': player.name,
+            'age': player.age,
+            'height': player.height,
+            'position': player.position
+        }
 
-        original_name = player.name
         with pytest.raises(ValueError):
             player.name = 123
+        assert player.name == initial_values['name']
 
-        assert player.name == original_name
+        with pytest.raises(ValueError):
+            player.age = "invalid"
+        assert player.age == initial_values['age']
+
+        with pytest.raises(ValueError):
+            player.height = "invalid"
+        assert player.height == initial_values['height']
+
+        with pytest.raises(ValueError):
+            player.position = "INVALID"
+        assert player.position == initial_values['position']
+
+        player.name = "New Valid Name"
+        player.age = 26
+        player.height = 176.0
+        player.position = "GK"
+
+        assert player.name == "New Valid Name"
+        assert player.age == 26
+        assert player.height == 176.0
+        assert player.position == "GK"
 
     def test_valid_value_change(self):
         player = FootballPlayer(name="Original Name", age=25, height=175.0, position="CM")
