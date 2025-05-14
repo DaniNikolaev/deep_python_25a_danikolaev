@@ -6,7 +6,9 @@ disable=
     too-many-public-methods,
     broad-exception-raised,
     too-many-branches,
-    unidiomatic-typecheck
+    unidiomatic-typecheck,
+    too-many-instance-attributes,
+    unused-argument
 [FORMAT]
 max-line-length=120
 [BASIC]
