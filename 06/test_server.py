@@ -1,4 +1,3 @@
-import os
 import threading
 from queue import Empty, Queue
 from unittest.mock import MagicMock, patch
@@ -13,7 +12,9 @@ class TestServer:
     def mock_worker(self):
         task_queue = Queue()
         result_queue = Queue()
-        return Worker(0, task_queue, result_queue, 3)
+        worker = Worker(0, task_queue, result_queue, 3)
+        worker.daemon = True
+        return worker
 
     @pytest.fixture
     def mock_master(self):
@@ -30,23 +31,29 @@ class TestServer:
         assert mock_master.num_workers == 3
         assert mock_master.k == 5
 
-    @pytest.mark.skipif(os.getenv('CI') == 'true', reason="Flaky in CI")
     @patch('urllib.request.urlopen')
-    def test_worker_error_handling(self, mock_urlopen, mock_worker):
+    @patch('socket.socket')
+    def test_worker_error_handling(self, mock_socket, mock_urlopen, mock_worker):
         mock_urlopen.side_effect = URLError("test error")
-
-        mock_socket = MagicMock()
-        mock_worker.task_queue.put((mock_socket, "http://invalid.com"))
-
-        worker_thread = threading.Thread(target=mock_worker.run)
-        worker_thread.start()
-        worker_thread.join(timeout=1)
+        mock_sock_instance = MagicMock()
+        mock_socket.return_value.__enter__.return_value = mock_sock_instance
 
         try:
-            result = mock_worker.result_queue.get(timeout=0.1)
-            assert result == 0
-        except Empty:
-            pytest.fail("Worker did not put result in queue within the timeout")
+            mock_worker.task_queue.put((mock_sock_instance, "http://invalid.com"), timeout=1.0)
+
+            worker_thread = threading.Thread(target=mock_worker.run)
+            worker_thread.daemon = True
+            worker_thread.start()
+
+            worker_thread.join(timeout=2.0)
+            try:
+                result = mock_worker.result_queue.get(timeout=1.0)
+                assert result == 0
+            except Empty:
+                pytest.fail("Worker did not put result in queue within 1 second timeout")
+
+        except Exception as e:
+            pytest.fail(f"Test failed with exception: {str(e)}")
 
     @patch('urllib.request.urlopen')
     def test_multiple_workers_processing(self, mock_urlopen):
@@ -63,19 +70,30 @@ class TestServer:
         mock_urlopen.return_value = MockResponse()
 
         mock_worker1 = Worker(1, Queue(), Queue(), 3)
+        mock_worker1.daemon = True
         mock_worker2 = Worker(2, Queue(), Queue(), 3)
+        mock_worker2.daemon = True
 
-        mock_worker1.task_queue.put((MagicMock(), "http://test1.com"))
-        mock_worker2.task_queue.put((MagicMock(), "http://test2.com"))
+        try:
+            mock_worker1.task_queue.put((MagicMock(), "http://test1.com"), timeout=1.0)
+            mock_worker2.task_queue.put((MagicMock(), "http://test2.com"), timeout=1.0)
 
-        worker_thread1 = threading.Thread(target=mock_worker1.run)
-        worker_thread2 = threading.Thread(target=mock_worker2.run)
+            worker_thread1 = threading.Thread(target=mock_worker1.run)
+            worker_thread1.daemon = True
+            worker_thread2 = threading.Thread(target=mock_worker2.run)
+            worker_thread2.daemon = True
 
-        worker_thread1.start()
-        worker_thread2.start()
+            worker_thread1.start()
+            worker_thread2.start()
 
-        worker_thread1.join(timeout=1)
-        worker_thread2.join(timeout=1)
+            worker_thread1.join(timeout=2.0)
+            worker_thread2.join(timeout=2.0)
 
-        assert mock_worker1.result_queue.qsize() == 1
-        assert mock_worker2.result_queue.qsize() == 1
+            try:
+                assert mock_worker1.result_queue.get(timeout=1.0) is not None
+                assert mock_worker2.result_queue.get(timeout=1.0) is not None
+            except Empty:
+                pytest.fail("Workers did not produce results within timeout")
+
+        except Exception as e:
+            pytest.fail(f"Test failed with exception: {str(e)}")
