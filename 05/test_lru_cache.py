@@ -273,3 +273,71 @@ class TestLRUCache:
         result = str(cache)
         assert "Node: k1: v1" in result
         assert "Node: k2: v2" in result
+
+    def test_lru_behavior_via_get_set(self):
+        cache = LRUCache(3)
+        cache.set("k1", "v1")
+        cache.set("k2", "v2")
+        cache.set("k3", "v3")
+
+        cache.get("k1")
+
+        cache.set("k4", "v4")
+
+        assert cache.get("k1") == "v1"
+        assert cache.get("k2") is None
+        assert cache.get("k3") == "v3"
+        assert cache.get("k4") == "v4"
+
+    def test_constant_time_operations(self):
+        cache = LRUCache(1000)
+
+        start_insert = time.time()
+        for i in range(1000):
+            cache.set(f"k{i}", f"v{i}")
+        insert_duration = time.time() - start_insert
+
+        start_access = time.time()
+        for i in range(1000):
+            cache.get(f"k{i}")
+        access_duration = time.time() - start_access
+
+        start_evict = time.time()
+        for i in range(1000, 2000):
+            cache.set(f"k{i}", f"v{i}")
+        evict_duration = time.time() - start_evict
+
+        assert insert_duration < 0.1
+        assert access_duration < 0.1
+        assert evict_duration < 0.1
+
+    def test_update_existing_key_and_lru(self):
+        cache = LRUCache(3)
+        cache.set("k1", "v1")
+        cache.set("k2", "v2")
+        cache.set("k3", "v3")
+
+        cache.set("k2", "v2_updated")
+
+        cache.set("k4", "v4")
+
+        assert cache.get("k1") is None
+        assert cache.get("k2") == "v2_updated"
+        assert cache.get("k3") == "v3"
+        assert cache.get("k4") == "v4"
+
+    def test_lru_example_from_task(self):
+        cache = LRUCache(2)
+
+        cache.set("k1", "val1")
+        cache.set("k2", "val2")
+
+        assert cache.get("k3") is None
+        assert cache.get("k2") == "val2"
+        assert cache.get("k1") == "val1"
+
+        cache.set("k3", "val3")
+
+        assert cache.get("k3") == "val3"
+        assert cache.get("k2") is None
+        assert cache.get("k1") == "val1"
