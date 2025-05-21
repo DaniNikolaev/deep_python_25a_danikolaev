@@ -25,7 +25,7 @@ jobs:
     - name: Install dependencies
       run: |
         python -m pip install --upgrade pip
-        pip install pytest pytest-mock pytest-cov pytest-asyncio flake8 pylint isort
+        pip install pytest pytest-mock pytest-cov pytest-asyncio aiohttp flake8 pylint isort
 
     - name: Run tests with coverage
       run: |
