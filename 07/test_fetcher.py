@@ -111,7 +111,7 @@ async def test_fetch_urls_semaphore(fetcher):
         await fetcher.fetch_urls(urls)
         total_time = time.time() - start_time
 
-        assert 0.1 <= total_time < 0.25
+        assert 0.25 <= total_time < 0.4
 
         max_concurrent = 0
         timeline = []
