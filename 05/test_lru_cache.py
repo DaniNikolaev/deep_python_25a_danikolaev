@@ -322,9 +322,13 @@ class TestLRUCache:
         cache.set("k4", "v4")
 
         assert cache.get("k1") is None
-        assert cache.get("k2") == "v2_updated"
         assert cache.get("k3") == "v3"
+        assert cache.get("k2") == "v2_updated"
         assert cache.get("k4") == "v4"
+
+        assert cache.head.key == "k4"
+        assert cache.head.next_node.key == "k2"
+        assert cache.tail.key == "k3"
 
     def test_lru_example_from_task(self):
         cache = LRUCache(2)
