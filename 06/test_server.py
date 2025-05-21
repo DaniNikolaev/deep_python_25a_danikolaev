@@ -51,9 +51,9 @@ class TestServer:
                 assert result == 0
             except Empty:
                 pytest.fail("Worker did not put result in queue within 1 second timeout")
-
         except Exception as e:
-            pytest.fail(f"Test failed with exception: {str(e)}")
+            print(f"Unexpected error in test: {e}")
+            raise
 
     @patch('urllib.request.urlopen')
     def test_multiple_workers_processing(self, mock_urlopen):
