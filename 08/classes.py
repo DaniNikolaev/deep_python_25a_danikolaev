@@ -34,7 +34,6 @@ class WeakrefClass:
             IntWrapper(c)
         ]
 
-        # Создаем слабые ссылки на эти экземпляры
         self.a = weakref.ref(self._int_wrappers[0])
         self.b = weakref.ref(self._int_wrappers[1])
         self.c = weakref.ref(self._int_wrappers[2])
