@@ -42,7 +42,8 @@ jobs:
         pytest --cov=06 --cov-report=xml 06/test_server.py
         pytest --cov=06 --cov-report=xml 06/test_integration.py
         pytest --cov=07 --cov-report=xml 07/test_fetcher.py
-        pytest --cov=08 --cov-report=xml 07/test_classes.py
+        pytest --cov=08 --cov-report=xml 08/test_classes.py
+        pytest --cov=09 --cov-report=xml 09/test_lru_cache_logging.py
 
     - name: Run isort
       run: |
@@ -50,6 +51,7 @@ jobs:
         isort --check --diff 06/
         isort --check --diff 07/
         isort --check --diff 08/
+        isort --check --diff 09/
 
     - name: Run flake8
       run: |
@@ -61,6 +63,7 @@ jobs:
         flake8 06/ --config=.flake8
         flake8 07/ --config=.flake8
         flake8 08/ --config=.flake8
+        flake8 09/ --config=.flake8
 
     - name: Run pylint
       run: |
@@ -72,6 +75,7 @@ jobs:
         pylint 06/ --rcfile=pylintrc
         pylint 07/ --rcfile=pylintrc
         pylint 08/ --rcfile=pylintrc
+        pylint 09/ --rcfile=pylintrc
 
     - name: Upload coverage to Codecov
       uses: codecov/codecov-action@v3
