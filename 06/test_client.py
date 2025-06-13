@@ -1,111 +1,92 @@
 import json
 import socket
+import threading
+import unittest
+from io import StringIO
+from queue import Queue
 from unittest.mock import MagicMock, patch
 
-import pytest
-from client import URLProcessor, main
+from client import URLProcessor, URLReader, start_processing
 
 
-class TestClient:
-    @pytest.fixture
-    def mock_processor(self):
-        return URLProcessor(["http://test.com"], "localhost", 5000)
+class TestURLProcessor(unittest.TestCase):
+    def setUp(self):
+        self.url_queue = Queue()
+        self.stop_event = threading.Event()
+        self.processor = URLProcessor(self.url_queue, 'localhost', 5000, self.stop_event)
 
-    def test_url_processor_initialization(self, mock_processor):
-        assert mock_processor.urls == ["http://test.com"]
-        assert mock_processor.host == "localhost"
-        assert mock_processor.port == 5000
+    @patch('client.socket.socket')
+    def test_process_url_success(self, mock_socket):
+        mock_conn = MagicMock()
+        mock_socket.return_value.__enter__.return_value = mock_conn
 
-    @patch('socket.socket')
-    def test_url_processor_success(self, mock_socket, mock_processor, capsys):
-        mock_sock_instance = MagicMock()
-        mock_socket.return_value.__enter__.return_value = mock_sock_instance
+        test_url = "http://example.com"
+        expected_result = {'status': 'success', 'result': 'test result'}
+        mock_conn.recv.return_value = json.dumps(expected_result).encode('utf-8')
 
-        mock_response = json.dumps({"test": 3}).encode('utf-8')
-        mock_sock_instance.recv.return_value = mock_response
+        result = self.processor.process_url(test_url)
+        self.assertTrue(result)
+        mock_conn.sendall.assert_called_once_with(test_url.encode('utf-8'))
 
-        mock_processor.run()
+    @patch('client.socket.socket')
+    def test_process_url_retry(self, mock_socket):
+        mock_conn = MagicMock()
+        mock_socket.return_value.__enter__.return_value = mock_conn
 
-        captured = capsys.readouterr()
-        assert "http://test.com: {'test': 3}" in captured.out
-        mock_sock_instance.connect.assert_called_once_with(("localhost", 5000))
-        mock_sock_instance.sendall.assert_called_once_with(b"http://test.com")
+        mock_conn.recv.return_value = json.dumps({'status': 'retry'}).encode('utf-8')
+        result = self.processor.process_url("http://example.com")
+        self.assertFalse(result)
 
-    @patch('socket.socket')
-    def test_url_processor_socket_error(self, mock_socket, mock_processor, capsys):
-        mock_sock_instance = MagicMock()
-        mock_socket.return_value.__enter__.return_value = mock_sock_instance
+    @patch('client.socket.socket')
+    def test_process_url_timeout(self, mock_socket):
+        mock_socket.return_value.__enter__.side_effect = socket.timeout()
+        result = self.processor.process_url("http://example.com")
+        self.assertFalse(result)
 
-        mock_sock_instance.connect.side_effect = socket.error("connection failed")
 
-        mock_processor.run()
+class TestURLReader(unittest.TestCase):
+    def test_url_reader(self):
+        url_queue = Queue()
+        stop_event = threading.Event()
+        test_urls = ["http://test1.com", "http://test2.com"]
 
-        captured = capsys.readouterr()
-        assert "Error processing http://test.com: connection failed" in captured.out
+        with patch('builtins.open', return_value=StringIO("\n".join(test_urls))):
+            reader = URLReader("dummy.txt", url_queue, stop_event)
+            reader.start()
+            reader.join()
 
-    @patch('builtins.open')
+        queued_urls = []
+        while not url_queue.empty():
+            queued_urls.append(url_queue.get())
+
+        self.assertEqual(set(queued_urls), set(test_urls))
+
+
+class TestClientIntegration(unittest.TestCase):
+    @patch('client.URLReader')
     @patch('client.URLProcessor')
-    def test_main_file_handling(self, mock_processor, mock_open):
-        mock_file = MagicMock()
-        mock_file.__enter__.return_value.readlines.return_value = [
-            "http://test1.com\n",
-            "http://test2.com\n",
-            "http://test3.com\n",
-            "http://test4.com\n"
-        ]
-        mock_open.return_value = mock_file
+    @patch('client.Queue')
+    def test_start_processing(self, mock_queue, mock_processor, mock_reader):
+        mock_queue_instance = MagicMock()
+        mock_queue.return_value = mock_queue_instance
 
-        created_threads = []
+        mock_reader_instance = MagicMock()
+        mock_reader.return_value = mock_reader_instance
 
-        class MockThread:
-            def __init__(self, target=None, args=()):
-                self.target = target
-                self.args = args
-                created_threads.append(self)
+        mock_processor.side_effect = [MagicMock() for _ in range(3)]
 
-            def start(self):
-                if self.target:
-                    self.target(*self.args)
+        args = MagicMock()
+        args.threads = 3
+        args.url_file = "test.txt"
+        args.host = "localhost"
+        args.port = 5000
 
-            def join(self):
-                pass
+        with patch('client.threading.Event', return_value=MagicMock()):
+            start_processing(args)
 
-        test_args = ["client.py", "2", "test_urls.txt"]
+        self.assertEqual(mock_processor.call_count, 3)
+        mock_reader_instance.start.assert_called_once()
 
-        with patch('sys.argv', test_args):
-            with patch('threading.Thread', MockThread):
-                processor_creations = []
 
-                def processor_side_effect(urls, host, port):
-                    mock = MagicMock()
-                    processor_creations.append(([url.strip() for url in urls], host, port))
-                    return mock
-
-                mock_processor.side_effect = processor_side_effect
-
-                main()
-
-                mock_open.assert_called_once_with("test_urls.txt", 'r', encoding='utf-8')
-
-                assert len(processor_creations) == 2
-
-                expected_chunk1 = ["http://test1.com", "http://test2.com"]
-                expected_chunk2 = ["http://test3.com", "http://test4.com"]
-                assert ((processor_creations[0][0] == expected_chunk1
-                        and processor_creations[1][0] == expected_chunk2)
-                        or (processor_creations[0][0] == expected_chunk2
-                        and processor_creations[1][0] == expected_chunk1))
-
-                assert all(hasattr(t, 'target') for t in created_threads)
-
-    @patch('builtins.open')
-    def test_main_file_error(self, mock_open, capsys):
-        mock_open.side_effect = IOError("file error")
-
-        test_args = ["client.py", "2", "test_urls.txt"]
-
-        with patch('sys.argv', test_args):
-            main()
-
-            captured = capsys.readouterr()
-            assert "Error reading URL file: file error" in captured.out
+if __name__ == '__main__':
+    unittest.main()

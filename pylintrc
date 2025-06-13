@@ -9,7 +9,10 @@ disable=
     unidiomatic-typecheck,
     too-many-instance-attributes,
     unused-argument,
-    broad-exception-caught
+    broad-exception-caught,
+    too-many-arguments,
+    too-many-positional-arguments,
+    redefined-outer-name
 [FORMAT]
 max-line-length=120
 [BASIC]
