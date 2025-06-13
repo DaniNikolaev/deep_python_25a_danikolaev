@@ -138,6 +138,8 @@ def setup_logging(use_stdout=False, use_filter=False):
     file_handler.setFormatter(logging.Formatter(
         '%(asctime)s - %(name)s - %(levelname)s - %(message)s'
     ))
+    if use_filter:
+        file_handler.addFilter(EvenWordsFilter())
     logger.addHandler(file_handler)
 
     if use_stdout:
