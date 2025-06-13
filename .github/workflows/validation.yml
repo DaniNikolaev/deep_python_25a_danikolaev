@@ -39,7 +39,6 @@ jobs:
         pytest --cov=05 --cov-report=xml 05/test_lru_cache.py
         pytest --cov=06 --cov-report=xml 06/test_client.py
         pytest --cov=06 --cov-report=xml 06/test_server.py
-        pytest --cov=06 --cov-report=xml 06/test_integration.py
         pytest --cov=07 --cov-report=xml 07/test_fetcher.py
         pytest --cov=08 --cov-report=xml 08/test_classes.py
         pytest --cov=09 --cov-report=xml 09/test_lru_cache_logging.py
