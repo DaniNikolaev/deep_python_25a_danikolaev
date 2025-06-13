@@ -42,10 +42,7 @@ jobs:
         pytest --cov=06 --cov-report=xml 06/test_integration.py
         pytest --cov=07 --cov-report=xml 07/test_fetcher.py
         pytest --cov=08 --cov-report=xml 08/test_classes.py
-<<<<<<< HEAD
         pytest --cov=09 --cov-report=xml 09/test_lru_cache_logging.py
-=======
->>>>>>> 5bb3d6db4faddc7a11c252faa55a11a9707d89b7
 
     - name: Run isort
       run: |
