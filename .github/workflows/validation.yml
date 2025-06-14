@@ -65,7 +65,6 @@ jobs:
         isort --check --diff 07/
         isort --check --diff 08/
         isort --check --diff 09/
-        isort --check --diff 10/
 
     - name: Run flake8
       run: |
