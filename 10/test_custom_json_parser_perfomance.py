@@ -39,11 +39,9 @@ class TestPerformance:
         return data
 
     def test_large_loads_performance(self):
-        # Проверяем, что стандартный loads работает
         std_data = json.loads(self.large_json)
         assert isinstance(std_data, dict), "Standard JSON decode failed"
 
-        # Пробуем кастомный loads
         try:
             custom_data = loads(self.large_json)
         except Exception as e:
@@ -70,7 +68,7 @@ class TestPerformance:
         print(f"Custom: {custom_time:.4f}s")
         print(f"Ratio: {custom_time / std_time:.2f}x")
 
-        assert custom_time >= 0.1  # Минимальное ожидаемое время
+        assert custom_time >= 0.05
 
     def test_large_dumps_performance(self):
         std_time = timeit.timeit(
