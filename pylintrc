@@ -12,7 +12,9 @@ disable=
     broad-exception-caught,
     too-many-arguments,
     too-many-positional-arguments,
-    redefined-outer-name
+    redefined-outer-name,
+    c-extension-no-member,
+    no-name-in-module
 [FORMAT]
 max-line-length=120
 [BASIC]
